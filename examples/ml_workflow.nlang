@@ -1,0 +1,42 @@
+# Machine Learning Workflow Example in NLang
+# This demonstrates the vision for AI-optimized programming
+
+# Load and prepare data
+import pandas.
+import sklearn.
+
+let dataset be "iris.csv".
+define train_size as 0.8.
+define test_size as 0.2.
+
+# Define model parameters
+let n_trees be 100.
+let max_depth be 5.
+define learning_rate as 0.01.
+
+# Training workflow
+print "Loading dataset from " plus dataset.
+print "Training with " plus n_trees plus " trees".
+print "Maximum depth is " plus max_depth.
+
+# Evaluation logic
+let target_accuracy be 0.95.
+if accuracy is at least target_accuracy, print "Success! Model meets target accuracy".
+if accuracy is less than target_accuracy, print "Need to improve model performance".
+
+# This would transpile to scikit-learn code like:
+# from sklearn.ensemble import RandomForestClassifier
+# from sklearn.model_selection import train_test_split
+# import pandas as pd
+# 
+# data = pd.read_csv("iris.csv")
+# X_train, X_test, y_train, y_test = train_test_split(data, test_size=0.2)
+# 
+# model = RandomForestClassifier(n_estimators=100, max_depth=5)
+# model.fit(X_train, y_train)
+# accuracy = model.score(X_test, y_test)
+# 
+# if accuracy >= 0.95:
+#     print("Success! Model meets target accuracy")
+# else:
+#     print("Need to improve model performance") 

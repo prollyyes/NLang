@@ -1,0 +1,147 @@
+(* NLang Language Grammar – milestone 1 *)
+(* File: grammar/aion.ebnf *)
+
+(* A program is a sequence of statements *)
+program        = { statement } ;
+
+
+(* ====================== *)
+(* 1. Declarations        *)
+(* ====================== *)
+
+(* Let X be a Y [equal to Z]. *)
+declaration    = let_decl | define_decl | set_decl ;
+
+let_decl       = "Let" identifier [be_type] [be_value] "." ;
+define_decl    = "Define" identifier [as_type] [as_value] "." ;
+
+(* Set X to be a Y [equal to Z]. *)
+set_decl       = "Set" identifier "to" be_type [be_value] "." ;
+
+be_type        = "be" article type_name ;
+as_type        = "as" type_name ;
+
+be_value       = "equal" "to" expression ;
+as_value       = "equal" "to" expression ;
+
+article        = "a" | "an" ;
+
+(* ====================== *)
+(* 2. Identifiers & Types *)
+(* ====================== *)
+
+identifier     = letter { letter | digit | "_" } ;
+type_name      = primitive_type
+               | collection_type
+               | identifier
+               ;
+
+primitive_type = "number" | "text" | "boolean" ;
+collection_type
+               = ("list" "of" type_name)
+               | ("map" "from" type_name "to" type_name)
+               ;
+
+(* ====================== *)
+(* 3. Expressions         *)
+(* ====================== *)
+
+literal        = number_literal
+               | string_literal
+               | boolean_literal
+               ;
+
+number_literal = digit { digit } [ "." digit { digit } ] ;
+string_literal = "\"" { character } "\"" ;
+
+(* ====================== *)
+(* 3. Operators           *)
+(* ====================== *)
+
+(* Symbolic arithmetic operators, only for numbers *)
+symbol_operator = "+" | "-" | "*" | "/" ;
+
+(* Word-based operators, only for strings *)
+word_operator   = "plus" | "minus" | "times" | "divided" "by" ;
+
+(* ====================== *)
+(* 4. Typed Expressions   *)
+(* ====================== *)
+
+numeric_expression
+    = number_literal
+    | "(" numeric_expression ")"
+    | numeric_expression symbol_operator numeric_expression
+    ;
+
+string_expression
+    = string_literal
+    | "(" string_expression ")"
+    | string_expression word_operator string_expression
+    ;
+
+boolean_literal= "true" | "false" ;
+
+(* ====================== *)
+(* 5. Expressions         *)
+(* ====================== *)
+
+expression
+    = numeric_expression
+    | string_expression
+    | identifier
+    | function_call
+    ;
+
+(* ====================== *)
+(* 1. Atoms               *)
+(* ====================== *)
+atom           = number_literal | string_literal | boolean_literal | identifier ;
+
+(* ====================== *)
+(* 2. Statements         *)
+(* ====================== *)
+statement      = verb_phrase "." ;
+
+verb_phrase    = verb noun_phrases [modifier_phrases] ;
+
+(* Verbs define the primary actions in NLang *)
+verb           = "Let"      (* Declaration *)
+               | "Define"   (* Declaration *)
+               | "Set"      (* Assignment/Declaration *)
+               | "If"       (* Conditional *)
+               | "For"      (* For-loop *)
+               | "While"    (* While-loop *)
+               | "Return"   (* Return statement *)
+               | "Print"    (* Output *)
+               | "Import"   (* Module import *)
+               | /* TODO: add more verbs */;
+
+noun_phrases   = noun_phrase { noun_phrase } ;
+
+noun_phrase    = identifier | literal ;
+
+modifier_phrases = modifier_phrase { modifier_phrase } ;
+
+modifier_phrase = in_clause | where_clause | do_clause | from_to_clause ;
+
+in_clause      = "in" expression ;
+
+where_clause   = "where" expression ;
+
+do_clause      = "do" statement_block ;
+
+statement_block = "Begin" { statement } "End" ;
+
+from_to_clause = "from" expression "to" expression ;
+
+(* ====================== *)
+(* 4. Placeholder stubs   *)
+(* ====================== *)
+
+assignment = "Set" identifier "to" expression "." ;
+expression_statement = expression "." ;
+function_call = identifier "(" [ argument_list ] ")" ;
+argument_list = expression { "," expression } ;
+
+(* End of grammar stub *)

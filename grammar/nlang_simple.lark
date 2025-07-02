@@ -1,0 +1,85 @@
+// Simplified NLang grammar for basic demo
+// This focuses on core functionality: let, define, print, import
+
+// Keywords (exact matches for now)
+LET: "let"
+DEFINE: "define"
+SET: "set"
+PRINT: "print"
+IMPORT: "import"
+IF: "if"
+
+// Basic operators
+PLUS: "plus"
+MINUS: "minus"
+TIMES: "times"
+DIVIDED_BY: "divided by"
+
+// Comparison operators
+IS: "is"
+EQUALS: "equals"
+EXCEEDS: "exceeds"
+IS_AT_LEAST: "is at least"
+IS_LESS_THAN: "is less than"
+
+// Other keywords
+BE: "be"
+AS: "as"
+TO: "to"
+
+// Start rule
+start: statement "."
+
+// Statements
+statement: let_statement
+         | define_statement
+         | print_statement
+         | import_statement
+         | if_statement
+
+// Let statement: "let x be 5" or "let x be 5 plus 3"
+let_statement: LET IDENTIFIER BE (simple_value | compound_expression)
+
+// Define statement: "define x as 5" or "define x as 5 plus 3"
+define_statement: DEFINE IDENTIFIER AS (simple_value | compound_expression)
+
+// Print statement: "print "hello""
+print_statement: PRINT (simple_value | compound_expression)
+
+// Import statement: "import pandas"
+import_statement: IMPORT IDENTIFIER
+
+// If statement: "if x is 5, print "hello""
+if_statement: IF condition "," print_statement
+
+// Simple values (no operators)
+simple_value: NUMBER
+            | STRING
+            | IDENTIFIER
+
+// Compound expressions (with operators)
+compound_expression: simple_value PLUS simple_value
+                   | simple_value MINUS simple_value
+                   | simple_value TIMES simple_value
+                   | simple_value DIVIDED_BY simple_value
+
+// Values (for backward compatibility)
+value: simple_value
+     | compound_expression
+
+// Conditions
+condition: IDENTIFIER IS (simple_value | compound_expression)
+         | IDENTIFIER EQUALS (simple_value | compound_expression)
+         | IDENTIFIER EXCEEDS (simple_value | compound_expression)
+         | IDENTIFIER IS_AT_LEAST (simple_value | compound_expression)
+         | IDENTIFIER IS_LESS_THAN (simple_value | compound_expression)
+
+// Terminals
+%import common.CNAME -> IDENTIFIER
+%import common.SIGNED_NUMBER -> NUMBER
+%import common.ESCAPED_STRING -> STRING
+%import common.WS
+
+%ignore WS
+COMMENT: /#.*/
+%ignore COMMENT 

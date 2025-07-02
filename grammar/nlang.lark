@@ -1,0 +1,109 @@
+// Keywords - case insensitive
+LET: /let/i
+DEFINE: /define/i
+SET: /set/i
+IF: /if/i
+FOR: /for/i
+WHILE: /while/i
+RETURN: /return/i
+PRINT: /print/i
+IMPORT: /import/i
+
+IN: /in/i
+WHERE: /where/i
+DO: /do/i
+BEGIN: /begin/i
+END: /end/i
+FROM: /from/i
+TO: /to/i
+
+TRUE: /true/i
+FALSE: /false/i
+
+// grammar/nlang.lark
+// NLang grammar for Lark — milestone 1 (verb-driven, typed expressions)
+
+start: statement
+
+// 1. Statements
+?statement: verb_phrase "."
+
+verb_phrase: verb noun_phrases modifier_phrases?
+
+verb: LET      -> let
+    | DEFINE   -> define
+    | SET      -> set_
+    | IF       -> if_
+    | FOR      -> for_
+    | WHILE    -> while_
+    | RETURN   -> return_
+    | PRINT    -> print_
+    | IMPORT   -> import_
+
+noun_phrases: noun_phrase+
+noun_phrase: IDENTIFIER        -> id
+           | literal           -> lit
+           | expression        -> expr
+           
+
+modifier_phrases: modifier_phrase+
+modifier_phrase: in_clause
+               | where_clause
+               | do_clause
+               | from_to_clause
+               
+
+in_clause: IN expression
+where_clause: WHERE expression
+do_clause: DO statement_block
+statement_block: BEGIN statement* END
+from_to_clause: FROM expression TO expression
+
+// 2. Typed Expressions
+?numeric_expression: NUMBER
+                   | IDENTIFIER
+                   | "(" numeric_expression ")"
+                   | numeric_expression SYMBOL_OP numeric_expression
+                   
+
+?string_expression: STRING
+                  | IDENTIFIER
+                  | "(" string_expression ")"
+                  | string_expression SYMBOL_OP string_expression
+                  | string_expression WORD_OP string_expression
+                  
+
+// Top-level expressions
+?expression: numeric_expression
+           | string_expression
+           | IDENTIFIER              -> id_expr
+           | function_call
+           | comparison_expression
+
+// Comparison expressions
+?comparison_expression: (numeric_expression | IDENTIFIER) COMPARISON_OP (numeric_expression | IDENTIFIER)
+           
+
+// Function calls
+function_call: IDENTIFIER "(" [ argument_list ] ")"
+argument_list: expression ("," expression)*
+
+// 3. Operators & Literals
+SYMBOL_OP: /[+\-*\/]/
+WORD_OP: /(plus|minus|times|divided by)/i
+COMPARISON_OP: /(==|!=|<=|>=|<|>|is|equals|exceeds|is at least|is less than)/i
+
+literal: NUMBER    -> num
+       | STRING    -> str
+       | TRUE      -> true
+       | FALSE     -> false
+
+// 4. Terminals & Whitespace
+%import common.CNAME       -> IDENTIFIER
+%import common.SIGNED_NUMBER -> NUMBER
+%import common.ESCAPED_STRING -> STRING
+%import common.WS
+
+%ignore WS
+COMMENT: /#.*/ 
+%ignore COMMENT

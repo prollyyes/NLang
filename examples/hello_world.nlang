@@ -1,0 +1,8 @@
+# Hello World in NLang
+# This demonstrates basic printing and variable assignment
+
+print "Hello, World!".
+let name be "NLang".
+print "Welcome to " plus name.
+define message as "This is natural language programming".
+print message. 

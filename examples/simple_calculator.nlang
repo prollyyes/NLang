@@ -1,0 +1,19 @@
+# Simple Calculator in NLang
+# Demonstrates variables, arithmetic, and conditional logic
+
+let x be 10.
+let y be 5.
+define sum as x plus y.
+define difference as x minus y.
+define product as x times y.
+define quotient as x divided by y.
+
+print "x = " plus x.
+print "y = " plus y.
+print "sum = " plus sum.
+print "difference = " plus difference.
+print "product = " plus product.
+print "quotient = " plus quotient.
+
+if x is 10, print "x equals 10".
+if y is less than x, print "y is less than x". 
